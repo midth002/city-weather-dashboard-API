@@ -1,3 +1,35 @@
-h1 { 
-    color: blue;
+header {
+    color: white;
+   
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    height: 5em;
 }
+
+
+
+h2 {
+    position: absolute;
+}
+
+.myRow {
+    border: 2px solid black;
+    
+}
+
+.myList {
+    border: none;
+}
+
+.myCards {
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    
+}
+
+.card {
+    color: white;
+}
+
