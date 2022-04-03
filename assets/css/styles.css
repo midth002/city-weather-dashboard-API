@@ -29,7 +29,13 @@ h2 {
     
 }
 
-.card {
+li {
+    text-decoration: none;
+}
+
+#uv-index {
+    padding: 5px; 
     color: white;
+    border-radius: 5px;
 }
 
