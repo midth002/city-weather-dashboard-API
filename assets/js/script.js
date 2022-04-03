@@ -90,7 +90,7 @@ function getCoordinatesAndWeather(search) {
 
         
         cityName.text(search + " (" + currentTime + ")")
-        currentTempEl.text("Temp: " + temp);
+        currentTempEl.text("Temp: " + temp + "°F");
         currentWindEl.text("Wind: " + wind + " MPH");
         currentHumidityEl.text("Humidity: " + humidity + "%");
         currentUvEl.text("UV Index: ");
@@ -130,7 +130,7 @@ function getCoordinatesAndWeather(search) {
              dateHeader.text(dateFormatter(unixTime))
             
              li1.append(forecastWeatherIcon)
-             li2.text("Temp: " + data.daily[i].temp.day.toFixed())
+             li2.text("Temp: " + data.daily[i].temp.day.toFixed() + "°F")
              li3.text("Wind: " + data.daily[i].wind_speed.toFixed() + " MPH")
              li4.text("Humidity: " + data.daily[i].humidity + "%")
     
