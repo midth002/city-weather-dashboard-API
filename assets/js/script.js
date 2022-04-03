@@ -106,10 +106,12 @@ function getCoordinatesAndWeather(search) {
 
         var myCards = $('.myCards')
         for (i=1; i < 6; i++) {
-            
             var card = $('<div>')
+            
             card.addClass('card')
              var dateHeader = $('<h4>')
+             var forecastWeatherIcon = $('<span>')
+             forecastWeatherIcon.html("<img src='https://openweathermap.org/img/w/" + data.daily[i].weather[0].icon + ".png' alt='Icon depicting weather.'>");
             
              var li1 = $('<p>')
              var li2 = $('<p>')
@@ -120,7 +122,7 @@ function getCoordinatesAndWeather(search) {
             
              dateHeader.text(dateFormatter(unixTime))
             
-             li1.text('coming soon')
+             li1.append(forecastWeatherIcon)
              li2.text(data.daily[i].temp.day)
              li3.text(data.daily[i].wind_speed)
              li4.text(data.daily[i].humidity)
