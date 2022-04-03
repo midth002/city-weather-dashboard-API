@@ -13,10 +13,7 @@ h2 {
     position: absolute;
 }
 
-.myRow {
-    border: 2px solid black;
-    
-}
+
 
 .myList {
     border: none;
@@ -34,8 +31,13 @@ li {
 }
 
 #uv-index {
-    padding: 5px; 
+    padding: 5px 20px; 
     color: white;
     border-radius: 5px;
+}
+
+#five-day-header {
+    font-weight: 800;
+    text-decoration: underline;
 }
 

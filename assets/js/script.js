@@ -2,11 +2,12 @@ var searchBtn = $('.btn')
 var citySearch = $('.city-search')
 var cityForm = $('.city-form')
 var cityName = $('.currentCityName')
-var currentWeather = $('.currentWeather')
+var currentWeather = $('.current-weather')
 var currentTempEl = $(".current-temp")
 var currentWindEl = $(".current-wind")
 var currentHumidityEl = $('.current-humidity')
 var currentDayIcon = $('#icon')
+
 
 var currentUvEl = $('.current-uv')
 var uvBlock = $('#uv-index')
@@ -75,14 +76,14 @@ function getCoordinatesAndWeather(search) {
 
         currentDayIcon.html("<img src='https://openweathermap.org/img/w/" + data.current.weather[0].icon + ".png' alt='Icon depicting current weather.'>");
         
-        var temp = data.current.temp
-        var wind = data.current.wind_speed
+        var temp = data.current.temp.toFixed()
+        var wind = data.current.wind_speed.toFixed()
         var humidity = data.current.humidity
         var uv = data.current.uvi
         if (uv > 5) {
             uvBlock.attr("style", "background-color: red;");
         } else if (uv >= 3) {
-            uvBlock.attr("style", "background-color: yellow;");
+            uvBlock.attr("style", "background-color: #CDC836;");
         } else {
             uvBlock.attr("style", "background-color: green;");
         }
@@ -95,6 +96,9 @@ function getCoordinatesAndWeather(search) {
         currentUvEl.text("UV Index: ");
         uvBlock.text(uv);
 
+        currentWeather.addClass('bg-primary bg-gradient')
+        currentWeather.attr('style', 'padding: 10px; color: white; margin-top: 15px; border-radius: 10px;')
+
         cityName.append(currentDayIcon);
         currentUvEl.append(uvBlock);
         currentWeather.append(cityName);
@@ -103,29 +107,32 @@ function getCoordinatesAndWeather(search) {
         currentWeather.append(currentHumidityEl);
         currentWeather.append(currentUvEl);
         
+        var fiveDayHeader = $('#five-day-header')
+        fiveDayHeader.text("Five Day Forecast")
 
         var myCards = $('.myCards')
         for (i=1; i < 6; i++) {
             var card = $('<div>')
             
-            card.addClass('card')
+            card.addClass('card bg-success bg-gradient')
+            card.attr("style", "color: white; padding: 5px 15px;")
              var dateHeader = $('<h4>')
              var forecastWeatherIcon = $('<span>')
              forecastWeatherIcon.html("<img src='https://openweathermap.org/img/w/" + data.daily[i].weather[0].icon + ".png' alt='Icon depicting weather.'>");
             
-             var li1 = $('<p>')
-             var li2 = $('<p>')
-             var li3 = $('<p>')
-             var li4 = $('<p>')
+             var li1 = $('<p>').attr("style", "padding: 0; margin: 0;")
+             var li2 = $('<p>').attr("style", "padding: 0; margin: 2px;")
+             var li3 = $('<p>').attr("style", "padding: 0; margin: 2px;")
+             var li4 = $('<p>').attr("style", "padding: 0; margin: 2px;")
             
              unixTime = data.daily[i].dt
             
              dateHeader.text(dateFormatter(unixTime))
             
              li1.append(forecastWeatherIcon)
-             li2.text(data.daily[i].temp.day)
-             li3.text(data.daily[i].wind_speed)
-             li4.text(data.daily[i].humidity)
+             li2.text("Temp: " + data.daily[i].temp.day.toFixed())
+             li3.text("Wind: " + data.daily[i].wind_speed.toFixed() + " MPH")
+             li4.text("Humidity: " + data.daily[i].humidity + "%")
     
              card.append(dateHeader, li1, li2, li3, li4);
              myCards.append(card);
