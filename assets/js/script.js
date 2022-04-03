@@ -6,6 +6,7 @@ var currentWeather = $('.currentWeather')
 var currentTempEl = $(".current-temp")
 var currentWindEl = $(".current-wind")
 var currentHumidityEl = $('.current-humidity')
+var currentDayIcon = $('#icon')
 
 var currentUvEl = $('.current-uv')
 var uvBlock = $('#uv-index')
@@ -71,6 +72,9 @@ function getCoordinatesAndWeather(search) {
     })
     .then(function (data) {
         console.log(data)
+
+        currentDayIcon.html("<img src='https://openweathermap.org/img/w/" + data.current.weather[0].icon + ".png' alt='Icon depicting current weather.'>");
+        
         var temp = data.current.temp
         var wind = data.current.wind_speed
         var humidity = data.current.humidity
@@ -82,6 +86,8 @@ function getCoordinatesAndWeather(search) {
         } else {
             uvBlock.attr("style", "background-color: green;");
         }
+
+        
         cityName.text(search + " (" + currentTime + ")")
         currentTempEl.text("Temp: " + temp);
         currentWindEl.text("Wind: " + wind + " MPH");
@@ -89,7 +95,7 @@ function getCoordinatesAndWeather(search) {
         currentUvEl.text("UV Index: ");
         uvBlock.text(uv);
 
-    
+        cityName.append(currentDayIcon);
         currentUvEl.append(uvBlock);
         currentWeather.append(cityName);
         currentWeather.append(currentTempEl);
