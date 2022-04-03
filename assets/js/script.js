@@ -6,17 +6,23 @@ var currentWeather = $('.currentWeather')
 var currentTempEl = $(".current-temp")
 var currentWindEl = $(".current-wind")
 var currentHumidityEl = $('.current-humidity')
+
 var currentUvEl = $('.current-uv')
 var uvBlock = $('#uv-index')
-var cardSection = $('.myCards')
+
 var secondColumn = $('.myDiv')
+var cityGroup = $('.list-group')
+var ul = $('ul')
 
 var search;
 var apiKey = "385e58697effddc1169cee4d7d6e5489"
 var lat;
 var lon;
 var unixTime;
-
+var savedCities = [];
+var storedCity;
+var cityBtn;
+var card;
 
 
     var currentTime = moment().format("l");
@@ -30,12 +36,22 @@ var unixTime;
     var date = new Date(unixTime*1000)
     console.log(date.toLocaleDateString("en-US"))
 
+function init() {
+    storedCity = JSON.parse(localStorage.getItem("cities"))
 
+    if (storedCity !== null) {
+    savedCities = storedCity 
+        for(i=0; i<savedCities.length; i++) {
+            cityBtn = $("<button>")
+            cityBtn.text(savedCities[i])
+            cityBtn.addClass("btn btn-secondary w-100 mt-3 cityBtn")
+            cityGroup.append(cityBtn)
+        }
+    }
+}
 
-
-
-function getCoordinatesAndWeather() {
-    search = citySearch.val();
+function getCoordinatesAndWeather(search) {
+   
     var url = "http://api.openweathermap.org/geo/1.0/direct?q=" + search + "&limit=1&appid=" + apiKey
 
     fetch(url) 
@@ -72,63 +88,106 @@ function getCoordinatesAndWeather() {
         currentHumidityEl.text("Humidity: " + humidity + "%");
         currentUvEl.text("UV Index: ");
         uvBlock.text(uv);
-        
-        
-        
 
-      
-
-        for (i=1; i < 6; i++) {
-            var card = $("<div>")
-            card.addClass("card")
-            unixTime = data.daily[i].dt;
-            var date = new Date(unixTime*1000)
-            var dateString = date.toLocaleDateString("en-US")
-            var cardDate = $("<h4>")
-            cardDate.text(dateString)
-            
-            var nextTemp = data.daily[i].temp.day
-            var nextWind = data.daily[i].wind_speed
-            var nextHumidity = data.daily[i].humidity
-            var nextUl = $("<ul>");
-            nextUl.attr("style", "list-style-type: none;")
-            var li1 = $("<li>").addClass('li1').text("comingsoon");
-            var li2 = $("<li>").addClass('li2').text("Temp: " + nextTemp);
-            var li3 = $("<li>").addClass('li3').text("Wind: " + nextWind + " MPH");
-            var li4 = $("<li>").addClass('li4').text("Humidity: " + nextHumidity + "%");
-
-            nextUl.append(li1, li2, li3, li4);
-         
-          
-            card.append(cardDate, nextUl);
-            cardSection.append(card)
-        
-        }
-
+    
         currentUvEl.append(uvBlock);
-
         currentWeather.append(cityName);
         currentWeather.append(currentTempEl);
         currentWeather.append(currentWindEl);
         currentWeather.append(currentHumidityEl);
         currentWeather.append(currentUvEl);
+        
+
+        var myCards = $('.myCards')
+        for (i=1; i < 6; i++) {
+            
+            var card = $('<div>')
+            card.addClass('card')
+             var dateHeader = $('<h4>')
+            
+             var li1 = $('<p>')
+             var li2 = $('<p>')
+             var li3 = $('<p>')
+             var li4 = $('<p>')
+            
+             unixTime = data.daily[i].dt
+            
+             dateHeader.text(dateFormatter(unixTime))
+            
+             li1.text('coming soon')
+             li2.text(data.daily[i].temp.day)
+             li3.text(data.daily[i].wind_speed)
+             li4.text(data.daily[i].humidity)
+    
+             card.append(dateHeader, li1, li2, li3, li4);
+             myCards.append(card);
+             secondColumn.append(myCards)
+
+        }
+     })
 
     })
-
-
-    })
-
 }
 
 
-
-
+function dateFormatter(unixTime) {
+    var date = new Date(unixTime*1000)
+   var dateString = date.toLocaleDateString("en-US")
+   return dateString;
+}
 
 searchBtn.on("click", function(event) {
     event.preventDefault();
-    getCoordinatesAndWeather();
-   
+    var cityValue = citySearch.val();
+    if (cityValue) {
+        removeCityWeather();
+        getCoordinatesAndWeather(citySearch.val());
+        setLocalStorage();  
+    } else {
+     
+    }
+ 
 });
+
+function removeCityWeather() {
+   $(".card").remove();
+}
+
+function setLocalStorage() {
+    var storedCity = citySearch.val();
+    if (storedCity !== null) {
+        var duplicateCity = savedCities.includes(storedCity)
+        if (duplicateCity) {
+            return;
+        } else {
+            savedCities.push(storedCity)
+            console.log(savedCities);
+            localStorage.setItem("cities", JSON.stringify(savedCities));
+            cityBtn = $("<button>");
+            cityBtn.addClass("btn btn-secondary w-100 mt-3 cityBtn");
+            cityGroup.append(cityBtn);
+        }
+    } else {
+        return;
+    }
+    
+
+}
+
+function getLocalStorage() {
+    storedCity = localStorage.getItem("cities")
+}
+
+cityGroup.click(function(e) {
+    e.preventDefault();
+    removeCityWeather();
+    var cityClicked = $(e.target).text();
+    getCoordinatesAndWeather(cityClicked);
+  
+});
+
+init()
+
 
 
 
