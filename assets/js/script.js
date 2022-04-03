@@ -165,6 +165,7 @@ function setLocalStorage() {
             localStorage.setItem("cities", JSON.stringify(savedCities));
             cityBtn = $("<button>");
             cityBtn.addClass("btn btn-secondary w-100 mt-3 cityBtn");
+            cityBtn.text(citySearch.val())
             cityGroup.append(cityBtn);
         }
     } else {
@@ -176,6 +177,8 @@ function setLocalStorage() {
 
 function getLocalStorage() {
     storedCity = localStorage.getItem("cities")
+
+  
 }
 
 cityGroup.click(function(e) {
