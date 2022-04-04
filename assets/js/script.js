@@ -54,7 +54,7 @@ function init() {
 
 function getCoordinatesAndWeather(search) {
    
-    var url = "http://api.openweathermap.org/geo/1.0/direct?q=" + search + "&limit=1&appid=" + apiKey
+    var url = "https://api.openweathermap.org/geo/1.0/direct?q=" + search + "&limit=1&appid=" + apiKey
 
     fetch(url) 
     .then(function (response) {
