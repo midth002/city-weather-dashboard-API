@@ -212,6 +212,7 @@ cityGroup.click(function (e) {
 
 });
 
+
 init();
 
 
