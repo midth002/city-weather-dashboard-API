@@ -7,11 +7,8 @@ var currentTempEl = $(".current-temp")
 var currentWindEl = $(".current-wind")
 var currentHumidityEl = $('.current-humidity')
 var currentDayIcon = $('#icon')
-
-
 var currentUvEl = $('.current-uv')
 var uvBlock = $('#uv-index')
-
 var secondColumn = $('.myDiv')
 var cityGroup = $('.list-group')
 var ul = $('ul')
@@ -26,7 +23,7 @@ var storedCity;
 var cityBtn;
 var card;
 
-
+// Get the current time and add by day for the 5 day forecast
 var currentTime = moment().format("l");
 var d1 = moment().add(1, "days").format("l");
 var d2 = moment().add(2, "days").format("l");
@@ -34,10 +31,7 @@ var d3 = moment().add(3, "days").format("l");
 var d4 = moment().add(4, "days").format("l");
 var d5 = moment().add(5, "days").format("l");
 
-var unixTime = 1648939303;
-var date = new Date(unixTime * 1000)
-
-
+// If user reloads page, grap from local storage the cities they have searched and add it to the side bar list
 function init() {
     storedCity = JSON.parse(localStorage.getItem("cities"))
 
@@ -52,34 +46,42 @@ function init() {
     }
 }
 
+
+// Fetch openweathermap api urls and render and display data
 function getCoordinatesAndWeather(search) {
 
+    // Get longitude and latitude for the city the user is trying to search for
     var url = "https://api.openweathermap.org/geo/1.0/direct?q=" + search + "&limit=1&appid=" + apiKey
 
+    // fetch direct longitude and latitude for city
     fetch(url)
         .then(function (response) {
             return response.json();
         })
+        // Then get data to make another fetch call
         .then(function (data) {
 
+            // Put the lat and lon data from previous api into this api parameters
             lat = data[0].lat.toString()
             lon = data[0].lon.toString()
 
             var url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=385e58697effddc1169cee4d7d6e5489&units=imperial"
 
+            // Fetch one call api data
             fetch(url)
                 .then(function (response) {
                     return response.json();
                 })
                 .then(function (data) {
-                    console.log(data)
-
+        
                     currentDayIcon.html("<img src='https://openweathermap.org/img/w/" + data.current.weather[0].icon + ".png' alt='Icon depicting current weather.'>");
 
+                    // Get the current weather information 
                     var temp = data.current.temp.toFixed()
                     var wind = data.current.wind_speed.toFixed()
                     var humidity = data.current.humidity
                     var uv = data.current.uvi
+                    // Conditional statement for the uv index display the box in a different color
                     if (uv > 5) {
                         uvBlock.attr("style", "background-color: red;");
                     } else if (uv >= 3) {
@@ -88,7 +90,7 @@ function getCoordinatesAndWeather(search) {
                         uvBlock.attr("style", "background-color: green;");
                     }
 
-
+                    // Display current weather information
                     cityName.text(search + " (" + currentTime + ")")
                     currentTempEl.text("Temp: " + temp + "°F");
                     currentWindEl.text("Wind: " + wind + " MPH");
@@ -107,13 +109,16 @@ function getCoordinatesAndWeather(search) {
                     currentWeather.append(currentHumidityEl);
                     currentWeather.append(currentUvEl);
 
+                    // 5 Day forecast section
                     var fiveDayHeader = $('#five-day-header')
                     fiveDayHeader.text("Five Day Forecast")
 
                     var myCards = $('.myCards')
+                    // Loop for the daily array on day 1 to day 5
                     for (i = 1; i < 6; i++) {
+                        
+                        // Create elements and attributes
                         var card = $('<div>')
-
                         card.addClass('card bg-success bg-gradient')
                         card.attr("style", "color: white; padding: 5px 15px;")
                         var dateHeader = $('<h4>')
@@ -127,6 +132,7 @@ function getCoordinatesAndWeather(search) {
 
                         unixTime = data.daily[i].dt
 
+                        // Display 5 day forecast information
                         dateHeader.text(dateFormatter(unixTime))
 
                         li1.append(forecastWeatherIcon)
@@ -144,13 +150,14 @@ function getCoordinatesAndWeather(search) {
         })
 }
 
-
+// Turn unix time into a date string
 function dateFormatter(unixTime) {
     var date = new Date(unixTime * 1000)
     var dateString = date.toLocaleDateString("en-US")
     return dateString;
 }
 
+// On click of the search button run the conditional statement and run the functions
 searchBtn.on("click", function (event) {
     event.preventDefault();
     var cityValue = citySearch.val();
@@ -164,10 +171,12 @@ searchBtn.on("click", function (event) {
 
 });
 
+// Remove the 5 day forecast so that it won't keep displaying new cards
 function removeCityWeather() {
     $(".card").remove();
 }
 
+// Set items in local storage if user hasn't already searched the same exact city
 function setLocalStorage() {
     var storedCity = citySearch.val();
     if (storedCity !== null) {
@@ -189,12 +198,12 @@ function setLocalStorage() {
 
 }
 
+// Get cities item from local storage
 function getLocalStorage() {
     storedCity = localStorage.getItem("cities")
-
-
 }
 
+// When a user clicks on a local storage city button run these functions and display the openweathermap api data
 cityGroup.click(function (e) {
     e.preventDefault();
     removeCityWeather();
@@ -203,7 +212,7 @@ cityGroup.click(function (e) {
 
 });
 
-init()
+init();
 
 
 
